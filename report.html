@@ -4,12 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="style.css" type="text/css" media="all" />
 <link rel="stylesheet" href="prism.css" />
-<link href='metricsgraphics.css' rel='stylesheet' type='text/css'>
-<link href='css/highlightjs-default.css' rel='stylesheet' type='text/css'>
-<script src='js/lib/highlight.pack.js'></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
-    <script src='https://d3js.org/d3.v4.min.js' charset='utf-8'></script>
-    <script src='metricsgraphics.min.js'></script>
+<link href='lib/css/metricsgraphics.css' rel='stylesheet' type='text/css'>
+<link href='lib/css/highlightjs-default.css' rel='stylesheet' type='text/css'>
+<script src='lib/js/highlight.pack.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+<script src='https://d3js.org/d3.v4.min.js' charset='utf-8'></script>
+<script src='lib/js/metricsgraphics.min.js'></script>
 <title>mozilla-central coverage</title>
 </head>
 <body>
@@ -24,14 +24,14 @@
 <input type="checkbox" name="rust" id="rust" checked="checked"><label for="rust">Rust</label>
 <br />
 <br />
-<br>
-<br>
+<br />
+<br />
 
 <div id='markers'></div>
       
+<script>
 
-    <script>
-        d3.json('coverage-data.json', function(data) {
+    d3.json('lib/coverage-data.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
     }
@@ -51,11 +51,11 @@
         
     });
 });
-    </script>
+</script>
 
-	<br>
-	<br>
-	<div id="output"></div>
+<br />
+<br />
+<div id="output"></div>
 <br />
 <a href="https://github.com/marco-c/code-coverage-reports/issues/new">Report an issue</a>
 <a class="github-button" href="https://github.com/marco-c/code-coverage-reports/fork" data-icon="octicon-repo-forked" data-size="large"
