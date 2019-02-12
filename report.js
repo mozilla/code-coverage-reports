@@ -65,7 +65,16 @@ async function showFile(file) {
     language = 'java';
   }
 
-  const changeset = await get_latest();
+  if(window.localStorage['text_val']=='')
+  {
+    const changeset = await get_latest();
+  }
+
+  else
+  { 
+    const changeset=window.localStorage['text_val'];
+  }
+
   const coverage = await get_file_coverage(changeset, file.path);
 
   const table = document.createElement('table');
