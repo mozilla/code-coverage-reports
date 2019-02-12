@@ -26,7 +26,23 @@
 <br />
 <br />
 <br />
-
+<script type="text/javascript">
+            $(document).ready(function () {
+            $("#revision").submit(function () {
+                window.localStorage['text_val'] = $("input[name = 'changeset-value']").val();
+            });
+            $(window).load(function () {
+                $("input[name = 'changeset-value']").val(window.localStorage['text_val']);
+                window.localStorage['text_val'] = '';
+            });
+        });
+</script>
+<form id='revision'>
+    Changest Value : <input type="text" name="changeset-value" id="changeset-value">
+&nbsp;
+    <input type="submit" name="submit">
+</form>
+<br>
 <div id='markers'></div>
       
 <script>

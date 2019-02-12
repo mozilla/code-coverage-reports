@@ -64,10 +64,16 @@ async function showFile(file) {
   } else if (file.path.endsWith('java')) {
     language = 'java';
   }
+  if(document.getElementById('changeset-value')=='')
+  {
+  	const changeset = await get_latest();
+  }
 
-  const changeset = await get_latest();
-  const coverage = await get_file_coverage(changeset, file.path);
-
+  else
+  {	
+  	const changeset=document.getElementById('changeset-value');
+  	const coverage = await get_file_coverage(changeset, file.path);
+  }
   const table = document.createElement('table');
   table.style.borderCollapse = 'collapse';
   table.style.borderSpacing = 0;

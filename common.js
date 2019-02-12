@@ -39,7 +39,7 @@ async function get_path_coverage(path) {
 
 async function get_latest() {
   let response = await fetch(`${COVERAGE_BACKEND_HOST}/coverage/latest`);
-  return (await response.json())['latest_rev'];
+  return (await response.json())['previous_rev'];
 }
 
 async function get_file_coverage(changeset, path) {
