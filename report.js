@@ -64,14 +64,14 @@ async function showFile(file) {
   } else if (file.path.endsWith('java')) {
     language = 'java';
   }
-  if(document.getElementById('changeset-value')=='')
+  if(window.localStorage['text_val']=='')
   {
   	const changeset = await get_latest();
   }
 
   else
   {	
-  	const changeset=document.getElementById('changeset-value');
+  	const changeset=window.localStorage['text_val'];
   	const coverage = await get_file_coverage(changeset, file.path);
   }
   const table = document.createElement('table');
