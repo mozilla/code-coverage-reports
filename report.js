@@ -69,6 +69,7 @@ async function showFile(file) {
   const coverage = await get_path_coverage(file.path);
 
   const table = document.createElement('table');
+  table.id = 'output';
   table.style.borderCollapse = 'collapse';
   table.style.borderSpacing = 0;
   const tbody = document.createElement('tbody');
