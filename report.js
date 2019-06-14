@@ -13,7 +13,7 @@ async function showDirectory(dir, files) {
   files = filter_languages(files);
 
   const columns = [['File name', x => getSpanForFile(x, dir)],
-                   ['Children', x => getSpanForValue('UNKNOWN')],
+                   ['Children', x => getSpanForValue(x.children)],
                    ['Coverage', x => getSpanForValue(x.coveragePercent + ' %')]];
 
   const output = document.createElement('div');
