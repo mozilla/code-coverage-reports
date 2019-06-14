@@ -151,10 +151,10 @@ async function generate() {
 }
 
 function graphHistory(path){
-	// Backend needs path without ending /
-	if (path && path.endsWith('/')) {
-		path = path.substring(0, path.length-1);
-	}
+  // Backend needs path without ending /
+  if (path && path.endsWith('/')) {
+    path = path.substring(0, path.length-1);
+  }
 
   get_history(path).then(function(data){
     var trace = {
