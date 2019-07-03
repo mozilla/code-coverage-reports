@@ -8,27 +8,6 @@ function getSpanForFile(data, dir) {
   return span;
 }
 
-// Build a breadcrumb navbar from a path
-function navbar(path) {
-  let files = path.split('/');
-  files.unshift(null); // add mozilla-central
-  let nav = document.createElement('nav');
-  let base = '';
-  files.forEach(file => {
-    let a = document.createElement('a');
-    if (file !== null) {
-      base += (base ? '/' : '') + file;
-      a.href = '#' + base;
-      a.textContent = file;
-    }else{
-      a.href = '#';
-      a.textContent = 'mozilla-central';
-    }
-    nav.appendChild(a);
-  });
-  return nav;
-}
-
 async function graphHistory(path) {
   // Backend needs path without ending /
   if (path && path.endsWith('/')) {
