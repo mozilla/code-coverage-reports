@@ -23,12 +23,15 @@ label {
   background-color: white;
   border-top: 1px solid darkgray;
   border-bottom: 1px solid darkgray;
-  padding: 1em 20%;
-  text-align: left;
   margin: auto;
+  text-align: left;
 }
 
 /* Directory navigation */
+#output.directory {
+  padding: 1em 20%;
+}
+
 #output .table {
   display: table;
   width: 100%;
@@ -75,6 +78,14 @@ label {
 }
 
 /* File coverage */
+#output.file, #output.file table {
+  width: 100%;
+}
+
+#output.file button {
+  margin: 5px;
+}
+
 #output .filename {
   text-align: left;
 }

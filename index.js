@@ -8,6 +8,17 @@ function getSpanForFile(data, dir) {
   return span;
 }
 
+function getBackButton(path) {
+  let pos = path.lastIndexOf('/');
+  let parentDir = pos ? path.substring(0, pos) : '';
+  let back = document.createElement('button');
+  back.textContent = 'Go up to ' + (parentDir || '/');
+  back.onclick = function(){
+    window.location.hash = '#' + parentDir;
+  };
+  return back;
+}
+
 async function graphHistory(path) {
   // Backend needs path without ending /
   if (path && path.endsWith('/')) {
@@ -43,21 +54,15 @@ async function showDirectory(dir, files) {
 
   const output = document.createElement('div');
   output.id = 'output';
+  output.className = 'directory';
 
   // Create menu with navigation button
   const menu = document.createElement('h2');
   let title = document.createElement('span');
-  title.textContent = (dir || '/') + ' : ' + files.length + ' directories/files';
+  title.textContent = '/' + dir + ' : ' + files.length + ' directories/files';
   menu.appendChild(title)
   if (dir) {
-    let pos = dir.lastIndexOf('/');
-    let parentDir = pos ? dir.substring(0, pos) : '';
-    let back = document.createElement('button');
-    back.textContent = 'Go back to ' + (parentDir || '/');
-    back.onclick = function(){
-      window.location.hash = '#' + parentDir;
-    };
-    menu.appendChild(back);
+    menu.appendChild(getBackButton(dir));
   }
   output.appendChild(menu);
 
@@ -108,8 +113,13 @@ async function showFile(file) {
   const changeset = await get_latest();
   const coverage = await get_path_coverage(file.path);
 
+  const output = document.createElement('div');
+  output.id = 'output';
+  output.className = 'file';
+  output.appendChild(getBackButton(file.path));
+
   const table = document.createElement('table');
-  table.id = 'output';
+  table.id = 'file';
   table.style.borderCollapse = 'collapse';
   table.style.borderSpacing = 0;
   const tbody = document.createElement('tbody');
@@ -146,7 +156,8 @@ async function showFile(file) {
     }
   }
 
-  document.getElementById('output').replaceWith(table);
+  output.appendChild(table);
+  document.getElementById('output').replaceWith(output);
 
   /*const pre = document.createElement('pre');
   const code = document.createElement('code');
