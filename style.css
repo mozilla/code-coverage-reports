@@ -26,46 +26,55 @@ label {
   padding: 1em 20%;
   text-align: left;
   margin: auto;
-  display: table;
-  width: 60%;
 }
 
-#output div {
+/* Directory navigation */
+#output .table {
+  display: table;
+  width: 100%;
+}
+
+#output .table div {
   display: table-row;
   height: 1.5em;
 }
 
-#output span {
+#output .table div > :first-child {
+  text-align: left;
+}
+
+#output .table div > :last-child {
+  text-align: right;
+}
+
+#output .table span {
   text-align: center;
   height: 1.5em;
 }
 
-/* Directory navigation */
-#output .row span {
+#output .table .row span, #output .table .header span {
   display: table-cell;
 }
 
-#output .row:nth-child(2n+5) {
+#output .table .row:nth-child(2n+3) {
   background: AliceBlue;
 }
 
-#output .row:hover {
+#output .table .row:hover {
   background-color: #d8dfe5;
 }
 
+#output h2 {
+  width: 100%;
+  display: block;
+  font-size: 1.3em;
+}
+
+#output h2 button {
+  float: right;
+}
+
 /* File coverage */
-#output div:first-child {
-  color: #cc0000;
-  font-weight: bold;
-  margin-bottom: 1em;
-  margin-left: 1em;
-  display: inline-block;
-}
-
-#output br {
-  display: none;
-}
-
 #output .filename {
   text-align: left;
 }

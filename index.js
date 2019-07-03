@@ -2,7 +2,7 @@ function getSpanForFile(data, dir) {
   const span = document.createElement('span');
   span.className = 'filename';
   const a = document.createElement('a');
-  a.textContent = data.path.substring(dir.length);
+  a.textContent = dir ? data.path.substring(dir.length+1) : data.path;
   a.href = '#' + data.path;
   span.appendChild(a);
   return span;
@@ -44,11 +44,25 @@ async function showDirectory(dir, files) {
   const output = document.createElement('div');
   output.id = 'output';
 
-  const global = document.createElement('div');
-  global.textContent = files.length + ' directories/files';
-  output.appendChild(global);
-  output.appendChild(document.createElement('br'));
-  output.appendChild(document.createElement('br'));
+  // Create menu with navigation button
+  const menu = document.createElement('h2');
+  let title = document.createElement('span');
+  title.textContent = (dir || '/') + ' : ' + files.length + ' directories/files';
+  menu.appendChild(title)
+  if (dir) {
+    let pos = dir.lastIndexOf('/');
+    let parentDir = pos ? dir.substring(0, pos) : '';
+    let back = document.createElement('button');
+    back.textContent = 'Go back to ' + (parentDir || '/');
+    back.onclick = function(){
+      window.location.hash = '#' + parentDir;
+    };
+    menu.appendChild(back);
+  }
+  output.appendChild(menu);
+
+  const table = document.createElement('div');
+  table.className = 'table';
 
   const header = document.createElement('div');
   header.className = 'header';
@@ -59,7 +73,7 @@ async function showDirectory(dir, files) {
     }
     header.append(span);
   });
-  output.append(header);
+  table.append(header);
 
   for (const file of files) {
     const entryElem = document.createElement('div');
@@ -67,8 +81,9 @@ async function showDirectory(dir, files) {
     columns.forEach(([, func]) => {
       entryElem.append(func(file));
     });
-    output.appendChild(entryElem);
+    table.appendChild(entryElem);
   }
+  output.appendChild(table);
   document.getElementById('output').replaceWith(output);
 }
 
@@ -148,10 +163,8 @@ async function showFile(file) {
 
 async function generate() {
   const path = window.location.hash.substring(1);
-  console.log(path);
 
   const data = await get_path_coverage(path);
-  console.log(data);
 
   if (data.type == 'directory') {
     await showDirectory(path, data.children);
