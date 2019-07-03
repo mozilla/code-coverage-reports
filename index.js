@@ -8,15 +8,25 @@ function getSpanForFile(data, dir) {
   return span;
 }
 
-function getBackButton(path) {
-  let pos = path.lastIndexOf('/');
-  let parentDir = pos ? path.substring(0, pos) : '';
-  let back = document.createElement('button');
-  back.textContent = 'Go up to ' + (parentDir || '/');
-  back.onclick = function(){
-    window.location.hash = '#' + parentDir;
-  };
-  return back;
+// Build a breadcrumb navbar from a path
+function navbar(path) {
+  let files = path.split('/');
+  files.unshift(null); // add mozilla-central
+  let nav = document.createElement('nav');
+  let base = '';
+  files.forEach(file => {
+    let a = document.createElement('a');
+    if (file !== null) {
+      base += (base ? '/' : '') + file;
+      a.href = '#' + base;
+      a.textContent = file;
+    }else{
+      a.href = '#';
+      a.textContent = 'mozilla-central';
+    }
+    nav.appendChild(a);
+  });
+  return nav;
 }
 
 async function graphHistory(path) {
@@ -56,14 +66,12 @@ async function showDirectory(dir, files) {
   output.id = 'output';
   output.className = 'directory';
 
-  // Create menu with navigation button
+  // Create menu with navbar
   const menu = document.createElement('h2');
+  menu.appendChild(navbar(dir));
   let title = document.createElement('span');
-  title.textContent = '/' + dir + ' : ' + files.length + ' directories/files';
+  title.textContent = ' : ' + files.length + ' directories/files';
   menu.appendChild(title)
-  if (dir) {
-    menu.appendChild(getBackButton(dir));
-  }
   output.appendChild(menu);
 
   const table = document.createElement('div');
@@ -116,7 +124,7 @@ async function showFile(file) {
   const output = document.createElement('div');
   output.id = 'output';
   output.className = 'file';
-  output.appendChild(getBackButton(file.path));
+  output.appendChild(navbar(file.path));
 
   const table = document.createElement('table');
   table.id = 'file';
@@ -158,6 +166,7 @@ async function showFile(file) {
 
   output.appendChild(table);
   document.getElementById('output').replaceWith(output);
+  document.getElementById('history').innerHTML = '';
 
   /*const pre = document.createElement('pre');
   const code = document.createElement('code');
