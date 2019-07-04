@@ -212,3 +212,25 @@ function navbar(path) {
   });
   return nav;
 }
+
+
+// Display message as main output
+function message(cssClass, message) {
+  let box = document.getElementById('message');
+	box.className = 'message ' + cssClass;
+	box.textContent = message;
+  box.style.display = 'block';
+}
+
+function hide(id) {
+  let box = document.getElementById(id);
+  box.style.display = 'none';
+}
+
+function show(id, node) {
+  let box = document.getElementById(id);
+  box.style.display = 'block';
+  if (node) {
+    box.replaceWith(node);
+  }
+}

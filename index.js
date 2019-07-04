@@ -28,6 +28,7 @@ async function graphHistory(path) {
     title:'Coverage history for ' + (path || 'full repository')
   };
 
+  show('history');
   Plotly.newPlot('history', [ trace ], layout);
 }
 
@@ -73,7 +74,8 @@ async function showDirectory(dir, files) {
     table.appendChild(entryElem);
   }
   output.appendChild(table);
-  document.getElementById('output').replaceWith(output);
+  hide('message');
+  show('output', output);
 }
 
 async function showFile(file) {
@@ -140,8 +142,8 @@ async function showFile(file) {
   }
 
   output.appendChild(table);
-  document.getElementById('output').replaceWith(output);
-  document.getElementById('history').innerHTML = '';
+  hide('message');
+  show('output', output);
 
   /*const pre = document.createElement('pre');
   const code = document.createElement('code');
@@ -159,7 +161,10 @@ async function showFile(file) {
 async function generate() {
   const path = window.location.hash.substring(1);
 
-  const data = await get_path_coverage(path);
+  // Reset display
+  hide('history');
+  hide('output');
+  message('loading', 'Loading coverage data for ' + (path || 'mozilla-central') + ' ...');
 
   if (data.type == 'directory') {
     await showDirectory(path, data.children);
