@@ -39,6 +39,11 @@ label {
   background: #209cee;
 }
 
+#main div.message.error {
+  border: 1px solid red;
+  background: #ff3860;
+}
+
 /* Directory navigation */
 #output.directory {
   padding: 1em 20%;

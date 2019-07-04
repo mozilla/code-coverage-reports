@@ -32,8 +32,15 @@ function getSpanForValue(value) {
 
 const COVERAGE_BACKEND_HOST = 'https://coverage.moz.tools';
 
-async function get_path_coverage(path) {
-  let response = await fetch(`${COVERAGE_BACKEND_HOST}/v2/path?path=${path}`);
+async function get_path_coverage(path, changeset) {
+  let params = `path=${path}`;
+  if (changeset) {
+    params += `&changeset=${changeset}`;
+  }
+  let response = await fetch(`${COVERAGE_BACKEND_HOST}/v2/path?${params}`).catch(alert);
+  if (response.status !== 200) {
+    throw new Error(response.status + ' - ' + response.statusText);
+  }
   return await response.json();
 }
 

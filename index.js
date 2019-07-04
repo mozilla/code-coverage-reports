@@ -1,3 +1,5 @@
+var REVISION = null;
+
 function getSpanForFile(data, dir) {
   const span = document.createElement('span');
   span.className = 'filename';
@@ -25,14 +27,14 @@ async function graphHistory(path) {
   };
 
   let layout = {
-    title:'Coverage history for ' + (path || 'full repository')
+    title:'Coverage history for ' + (path || 'mozilla-central')
   };
 
   show('history');
   Plotly.newPlot('history', [ trace ], layout);
 }
 
-async function showDirectory(dir, files) {
+async function showDirectory(dir, revision, files) {
   graphHistory(dir);
 
   const columns = [['File name', x => getSpanForFile(x, dir)],
@@ -47,8 +49,11 @@ async function showDirectory(dir, files) {
   const menu = document.createElement('h2');
   menu.appendChild(navbar(dir));
   let title = document.createElement('span');
-  title.textContent = ' : ' + files.length + ' directories/files';
+  title.textContent = ': ' + files.length + ' directories/files';
   menu.appendChild(title)
+  let rev = document.createElement('span');
+  rev.textContent = '@ ' + (revision || 'latest');
+  menu.appendChild(rev)
   output.appendChild(menu);
 
   const table = document.createElement('div');
@@ -78,7 +83,7 @@ async function showDirectory(dir, files) {
   show('output', output);
 }
 
-async function showFile(file) {
+async function showFile(file, revision) {
   let source = await get_source(file.path);
 
   let language;
@@ -164,13 +169,40 @@ async function generate() {
   // Reset display
   hide('history');
   hide('output');
-  message('loading', 'Loading coverage data for ' + (path || 'mozilla-central') + ' ...');
+  message('loading', 'Loading coverage data for ' + (path || 'mozilla-central') + ' @ ' + (REVISION || 'latest'));
+
+  try {
+    var data = await get_path_coverage(path, REVISION);
+  } catch (err) {
+    message('error', 'Failed to load coverage: ' + err.message);
+    return;
+  }
 
   if (data.type == 'directory') {
-    await showDirectory(path, data.children);
+    await showDirectory(path, REVISION, data.children);
   } else if (data.type === 'file') {
-    await showFile(data);
+    await showFile(data, REVISION);
   }
 }
 
-main(generate, []);
+async function workflow() {
+
+  // Revision input management
+  const revision = document.getElementById('revision');
+  revision.onkeydown = async function(evt){
+    if(evt.keyCode === 13) {
+      REVISION = revision.value;
+      await generate();
+    }
+  };
+
+  // Load already available revision in box (on refresh)
+  if (revision.value) {
+    REVISION = revision.value;
+  }
+
+  // Default generation with latest data
+  await generate();
+};
+
+main(workflow, []);
