@@ -1,11 +1,9 @@
-var REVISION = null;
-
-function getSpanForFile(data, dir) {
+function getSpanForFile(data, dir, revision) {
   const span = document.createElement('span');
   span.className = 'filename';
   const a = document.createElement('a');
   a.textContent = dir ? data.path.substring(dir.length+1) : data.path;
-  a.href = '#' + data.path;
+  a.href = '#' + (revision || REV_LATEST) + ':' + data.path;
   span.appendChild(a);
   return span;
 }
@@ -37,7 +35,7 @@ async function graphHistory(path) {
 async function showDirectory(dir, revision, files) {
   graphHistory(dir);
 
-  const columns = [['File name', x => getSpanForFile(x, dir)],
+  const columns = [['File name', x => getSpanForFile(x, dir, revision)],
                    ['Children', x => getSpanForValue(x.children)],
                    ['Coverage', x => getSpanForValue(x.coveragePercent + ' %')]];
 
@@ -47,13 +45,10 @@ async function showDirectory(dir, revision, files) {
 
   // Create menu with navbar
   const menu = document.createElement('h2');
-  menu.appendChild(navbar(dir));
+  menu.appendChild(navbar(dir, revision));
   let title = document.createElement('span');
   title.textContent = ': ' + files.length + ' directories/files';
   menu.appendChild(title)
-  let rev = document.createElement('span');
-  rev.textContent = '@ ' + (revision || 'latest');
-  menu.appendChild(rev)
   output.appendChild(menu);
 
   const table = document.createElement('div');
@@ -106,7 +101,7 @@ async function showFile(file, revision) {
   const output = document.createElement('div');
   output.id = 'output';
   output.className = 'file';
-  output.appendChild(navbar(file.path));
+  output.appendChild(navbar(file.path, revision));
 
   const table = document.createElement('table');
   table.id = 'file';
@@ -163,25 +158,52 @@ async function showFile(file, revision) {
   document.getElementById('output').replaceWith(pre);*/
 }
 
+function readHash() {
+  // Reads changeset & path from current URL hash
+  let hash = window.location.hash.substring(1);
+  let pos = hash.indexOf(':');
+  if (pos === -1) {
+    return ['', ''];
+  }
+  return [
+    hash.substring(0, pos),
+    hash.substring(pos+1),
+  ]
+}
+
+function updateHash(newChangeset, newPath) {
+  // Set the URL hash with both changeset & path
+  let [changeset, path] = readHash();
+  changeset = newChangeset || changeset || REV_LATEST;
+  path = newPath || path || '';
+  window.location.hash = '#' + changeset + ':' + path;
+}
+
 async function generate() {
-  const path = window.location.hash.substring(1);
+  let [revision, path] = readHash();
 
   // Reset display
   hide('history');
   hide('output');
-  message('loading', 'Loading coverage data for ' + (path || 'mozilla-central') + ' @ ' + (REVISION || 'latest'));
+  message('loading', 'Loading coverage data for ' + (path || 'mozilla-central') + ' @ ' + (revision || REV_LATEST));
+
+  // Also update the revision element
+  if (revision != REV_LATEST) {
+    let input = document.getElementById('revision');
+    input.value = revision;
+  }
 
   try {
-    var data = await get_path_coverage(path, REVISION);
+    var data = await get_path_coverage(path, revision);
   } catch (err) {
     message('error', 'Failed to load coverage: ' + err.message);
     return;
   }
 
   if (data.type == 'directory') {
-    await showDirectory(path, REVISION, data.children);
+    await showDirectory(path, revision, data.children);
   } else if (data.type === 'file') {
-    await showFile(data, REVISION);
+    await showFile(data, revision);
   }
 }
 
@@ -191,15 +213,9 @@ async function workflow() {
   const revision = document.getElementById('revision');
   revision.onkeydown = async function(evt){
     if(evt.keyCode === 13) {
-      REVISION = revision.value;
-      await generate();
+      updateHash(revision.value);
     }
   };
-
-  // Load already available revision in box (on refresh)
-  if (revision.value) {
-    REVISION = revision.value;
-  }
 
   // Default generation with latest data
   await generate();
