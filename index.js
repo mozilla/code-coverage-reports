@@ -95,7 +95,6 @@ async function showFile(file) {
   }
 
   const changeset = await get_latest();
-  const coverage = await get_path_coverage(file.path);
 
   const output = document.createElement('div');
   output.id = 'output';
@@ -134,8 +133,8 @@ async function showFile(file) {
     code.classList.add(`lang-${language}`);
     Prism.highlightElement(code);
 
-    if (coverage['coverage'][lineNumber] != -1) {
-      let cssClass = (coverage['coverage'][lineNumber] > 0) ? 'covered' : 'uncovered';
+    if (file.coverage[lineNumber] != -1) {
+      let cssClass = (file.coverage[lineNumber] > 0) ? 'covered' : 'uncovered';
       tr.classList.add(cssClass);
     }
   }
