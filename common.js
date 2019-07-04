@@ -224,8 +224,8 @@ function navbar(path) {
 // Display message as main output
 function message(cssClass, message) {
   let box = document.getElementById('message');
-	box.className = 'message ' + cssClass;
-	box.textContent = message;
+  box.className = 'message ' + cssClass;
+  box.textContent = message;
   box.style.display = 'block';
 }
 
