@@ -57,7 +57,7 @@ async function get_file_coverage(changeset, path) {
 }
 
 async function get_history(path) {
-  // Backend needs path without ending /
+  // Backend needs path without trailing /
   if (path && path.endsWith('/')) {
     path = path.substring(0, path.length-1);
   }
