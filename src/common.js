@@ -6,18 +6,31 @@ function assert(condition, message) {
   }
 }
 
-function windowLoaded() {
-  return new Promise(resolve => window.onload = resolve);
+function domContentLoaded() {
+  return new Promise(resolve => {
+    document.addEventListener('DOMContentLoaded', resolve);
+  });
 }
 
-async function main(fn, opts) {
-  await windowLoaded();
+async function main(load, display, opts) {
+  // Immediately listen to DOM event
+  let domReady = domContentLoaded();
 
-  monitor_options(opts, fn);
+  // Load initial data
+  let data = await load();
 
-  window.onhashchange = fn;
+  // Wait for DOM to be ready before displaying
+  await domReady;
+  display(data);
 
-  fn();
+  // Full workflow, loading then displaying data
+  // used for following updates
+  let full = async function() {
+    let data = await load();
+    await display(data);
+  };
+  monitor_options(opts, full);
+  window.onhashchange = full;
 }
 
 
