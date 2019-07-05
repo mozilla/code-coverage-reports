@@ -1,3 +1,6 @@
-Feel free to take on [issues from our Issue tracker on Github](https://github.com/mozilla/code-coverage-reports/issues), and submit a pull request on that repository !
+## Contributing
 
-Easy issues to start working on the project are labelled as [good-first-bug](https://github.com/mozilla/code-coverage-reports/issues?q=is%3Aissue+is%3Aopen+label%3Agood-first-bug)
+Discussions happen in #codecoverage on irc.mozilla.org.
+
+1. [Issues marked as `good-first-bug`](https://github.com/mozilla/code-coverage-reports/labels/good-first-bug) are self-contained enough that a contributor should be able to work on them.
+2. Issues are considered not assigned, until there is a PR linked to them.
