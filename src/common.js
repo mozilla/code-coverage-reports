@@ -16,12 +16,12 @@ async function main(load, display, opts) {
   // Immediately listen to DOM event
   let domReady = domContentLoaded();
 
-  // Load initial data
+  // Load initial data before DOM is available
   let data = await load();
 
   // Wait for DOM to be ready before displaying
   await domReady;
-  display(data);
+  await display(data);
 
   // Full workflow, loading then displaying data
   // used for following updates
@@ -254,8 +254,14 @@ function navbar(path, revision) {
 }
 
 
-// Display message as main output
+// Display helpers
+function canDisplay() {
+  return document.readyState == 'complete';
+}
+
 function message(cssClass, message) {
+  if(!canDisplay()) return;
+
   let box = document.getElementById('message');
   box.className = 'message ' + cssClass;
   box.textContent = message;
@@ -263,11 +269,15 @@ function message(cssClass, message) {
 }
 
 function hide(id) {
+  if(!canDisplay()) return;
+
   let box = document.getElementById(id);
   box.style.display = 'none';
 }
 
 function show(id, node) {
+  if(!canDisplay()) return;
+
   let box = document.getElementById(id);
   box.style.display = 'block';
   if (node) {
