@@ -310,4 +310,5 @@ function render(template, data, target) {
   let box = document.getElementById(target);
   box.innerHTML = output;
   box.style.display = 'block';
+  return box;
 }
