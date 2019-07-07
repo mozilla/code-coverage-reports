@@ -220,19 +220,18 @@ function build_navbar(path, revision) {
   if (path.endsWith('/')) {
     path = path.substring(0, path.length-1);
   }
-  let href = revision !== undefined ? (revision + ':') : '';
   let base = '';
   let links = [
     {
       'name': 'mozilla-central',
-      'link': '#' + href,
+      'path': '',
     }
   ];
   return links.concat(path.split('/').map(file => {
     base += (base ? '/' : '') + file;
     return {
       'name': file,
-      'link': '#' + href + base,
+      'path': base,
     };
   }));
 }

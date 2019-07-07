@@ -19,7 +19,7 @@
   <h2>
     <nav>
       {{#navbar}}
-      <a href="{{ link }}">{{ name }}</a>
+      <a href="#{{ revision }}:{{ path }}">{{ name }}</a>
       {{/navbar}}
     </nav>
   </h2>
@@ -45,7 +45,7 @@
   <h2>
     <nav>
       {{#navbar}}
-      <a href="{{ link }}">{{ name }}</a>
+      <a href="#{{ revision }}:{{ path }}">{{ name }}</a>
       {{/navbar}}
     </nav>
     <span> : {{ files.length }} files</span>
@@ -60,7 +60,7 @@
 
     {{#files}}
     <div class="row">
-      <span class="filename"><a href="{{ file_url }}">{{ file_name }}</a></span>
+      <span class="filename"><a href="#{{ revision }}:{{ path }}">{{ file_name }}</a></span>
       <span>{{ children }}</span>
       <span>{{ coveragePercent }} %</span>
     </div>
