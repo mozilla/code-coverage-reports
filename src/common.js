@@ -229,6 +229,28 @@ function filter_last_push_date(files) {
   });
 }
 
+// Build the urls for a breadcrumb Navbar from a path
+function build_navbar(path, revision) {
+  if (path.endsWith('/')) {
+    path = path.substring(0, path.length-1);
+  }
+  let href = revision !== undefined ? (revision + ':') : '';
+  let base = '';
+  let links = [
+    {
+      'name': 'mozilla-central',
+      'link': '#' + href,
+    }
+  ];
+  return links.concat(path.split('/').map(file => {
+    base += (base ? '/' : '') + file;
+    return {
+      'name': file,
+      'link': '#' + href + base,
+    };
+  }));
+}
+
 // Build a breadcrumb Navbar from a path
 function navbar(path, revision) {
   let files = path.split('/');
@@ -281,4 +303,11 @@ function show(id, node) {
   if (node) {
     box.replaceWith(node);
   }
+}
+
+function render(template, data, target) {
+  var output = Mustache.render(document.getElementById(template).innerHTML, data);
+  let box = document.getElementById(target);
+  box.innerHTML = output;
+  box.style.display = 'block';
 }

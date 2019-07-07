@@ -55,7 +55,7 @@ header input {
 }
 
 /* Directory navigation */
-#output.directory {
+#output.directory, #output > .directory {
   padding: 1em 20%;
 }
 
