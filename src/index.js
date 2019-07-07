@@ -1,13 +1,3 @@
-function getSpanForFile(data, dir, revision) {
-  const span = document.createElement('span');
-  span.className = 'filename';
-  const a = document.createElement('a');
-  a.textContent = dir ? data.path.substring(dir.length+1) : data.path;
-  a.href = '#' + (revision || REV_LATEST) + ':' + data.path;
-  span.appendChild(a);
-  return span;
-}
-
 async function graphHistory(history, path) {
   if (history === null) {
     message('warning', `No history data for ${path}`);
@@ -31,46 +21,19 @@ async function graphHistory(history, path) {
 }
 
 async function showDirectory(dir, revision, files) {
-  const columns = [['File name', x => getSpanForFile(x, dir, revision)],
-                   ['Children', x => getSpanForValue(x.children)],
-                   ['Coverage', x => getSpanForValue(x.coveragePercent + ' %')]];
-
-  const output = document.createElement('div');
-  output.id = 'output';
-  output.className = 'directory';
-
-  // Create menu with navbar
-  const menu = document.createElement('h2');
-  menu.appendChild(navbar(dir, revision));
-  let title = document.createElement('span');
-  title.textContent = ': ' + files.length + ' directories/files';
-  menu.appendChild(title)
-  output.appendChild(menu);
-
-  const table = document.createElement('div');
-  table.className = 'table';
-
-  const header = document.createElement('div');
-  header.className = 'header';
-  columns.forEach(([name, ]) => {
-    const span = getSpanForValue(name);
-    if (name === 'File name') {
-      span.className = 'filename';
+  let context = {
+    navbar: build_navbar(dir, revision),
+    files: files,
+    file_url: function(){
+      // Build inner navigation with revision
+      return '#' + (revision || REV_LATEST) + ':' + this.path;
+    },
+    file_name: function(){
+      // Build filename relative to current dir
+      return dir ? this.path.substring(dir.length+1) : this.path;
     }
-    header.append(span);
-  });
-  table.append(header);
-
-  for (const file of files) {
-    const entryElem = document.createElement('div');
-    entryElem.className = 'row';
-    columns.forEach(([, func]) => {
-      entryElem.append(func(file));
-    });
-    table.appendChild(entryElem);
-  }
-  output.appendChild(table);
-  show('output', output);
+  };
+  render('browser', context, 'output');
 }
 
 async function showFile(file, revision) {

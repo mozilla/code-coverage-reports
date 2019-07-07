@@ -40,6 +40,36 @@
 </div>
 </script>
 
+<script id="browser" type="x-tmpl-mustache">
+<div class="directory">
+  <h2>
+    <nav>
+      {{#navbar}}
+      <a href="{{ link }}">{{ name }}</a>
+      {{/navbar}}
+    </nav>
+    <span> : {{ files.length }} files</span>
+  </h2>
+
+  <div class="table">
+    <div class="header">
+      <span class="filename">File name</span>
+      <span>Children</span>
+      <span>Coverage</span>
+    </div>
+
+    {{#files}}
+    <div class="row">
+      <span class="filename"><a href="{{ file_url }}">{{ file_name }}</a></span>
+      <span>{{ children }}</span>
+      <span>{{ coveragePercent }} %</span>
+    </div>
+    {{/files}}
+	</div>
+
+</div>
+</script>
+
 <header>
   <a href="zero_coverage_report.html">View the zero coverage report</a>
   &bull;
