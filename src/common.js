@@ -7,9 +7,7 @@ function assert(condition, message) {
 }
 
 function domContentLoaded() {
-  return new Promise(resolve => {
-    document.addEventListener('DOMContentLoaded', resolve);
-  });
+  return new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
 }
 
 async function main(load, display, opts) {
