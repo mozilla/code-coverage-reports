@@ -38,19 +38,34 @@ const COVERAGE_BACKEND_HOST = 'https://coverage.moz.tools';
 
 function cache_get(cache, key) {
   if (key in cache) {
-    return cache[key];
+    return cache[key].val;
   }
 }
 
 function cache_set(cache, key, value) {
-  cache[key] = value;
+  let now = new Date().getTime() / 1000;
+
+  // If the cache got too big, remove all elements that were added more
+  // than 15 minutes ago.
+  if (Object.keys(cache).length > 100) {
+    for (let key in cache) {
+      if (cache[key].time < now + 15 * 60) {
+        delete cache[key];
+      }
+    }
+  }
+
+  cache[key] = {
+    'val': value,
+    'time': now,
+  };
 }
 
 let path_coverage_cache = {};
 async function get_path_coverage(path, changeset) {
-  let result = cache_get(path_coverage_cache, `${changeset}_${path}`);
-  if (result) {
-    return result;
+  let data = cache_get(path_coverage_cache, `${changeset}_${path}`);
+  if (data) {
+    return data;
   }
 
   let params = `path=${path}`;
@@ -61,29 +76,29 @@ async function get_path_coverage(path, changeset) {
   if (response.status !== 200) {
     throw new Error(response.status + ' - ' + response.statusText);
   }
-  result = await response.json();
+  data = await response.json();
 
-  cache_set(path_coverage_cache, `${changeset}_${path}`, result);
+  cache_set(path_coverage_cache, `${changeset}_${path}`, data);
 
-  return result;
+  return data;
 }
 
 let history_cache = {};
 async function get_history(path) {
-  let result = cache_get(history_cache, path);
-  if (result) {
-    return result;
-  }
-
   // Backend needs path without trailing /
   if (path && path.endsWith('/')) {
     path = path.substring(0, path.length-1);
   }
 
-  let response = await fetch(`${COVERAGE_BACKEND_HOST}/v2/history?path=${path}`);
-  let data = await response.json();
+  let data = cache_get(history_cache, path);
+  if (data) {
+    return data;
+  }
 
-  cache_set(history_cache, path, result);
+  let response = await fetch(`${COVERAGE_BACKEND_HOST}/v2/history?path=${path}`);
+  data = await response.json();
+
+  cache_set(history_cache, path, data);
 
   // Check data has coverage values
   // These values are missing when going above 2 levels right now
