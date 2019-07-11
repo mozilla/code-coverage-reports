@@ -49,7 +49,7 @@ function cache_set(cache, key, value) {
   // than 15 minutes ago.
   if (Object.keys(cache).length > 100) {
     for (let key in cache) {
-      if (cache[key].time < now + 15 * 60) {
+      if (cache[key].time < now - 15 * 60) {
         delete cache[key];
       }
     }
