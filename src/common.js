@@ -36,10 +36,21 @@ async function main(load, display, opts) {
 
 const COVERAGE_BACKEND_HOST = 'https://coverage.moz.tools';
 
+function cache_get(cache, key) {
+  if (key in cache) {
+    return cache[key];
+  }
+}
+
+function cache_set(cache, key, value) {
+  cache[key] = value;
+}
+
 let path_coverage_cache = {};
 async function get_path_coverage(path, changeset) {
-  if (changeset in path_coverage_cache && path in path_coverage_cache[changeset]) {
-    return path_coverage_cache[changeset][path];
+  let result = cache_get(path_coverage_cache, `${changeset}_${path}`);
+  if (result) {
+    return result;
   }
 
   let params = `path=${path}`;
@@ -52,19 +63,16 @@ async function get_path_coverage(path, changeset) {
   }
   result = await response.json();
 
-  if (!(changeset in path_coverage_cache)) {
-    path_coverage_cache[changeset] = {};
-  }
-
-  path_coverage_cache[changeset][path] = result;
+  cache_set(path_coverage_cache, `${changeset}_${path}`, result);
 
   return result;
 }
 
 let history_cache = {};
 async function get_history(path) {
-  if (path in history_cache) {
-    return history_cache[path];
+  let result = cache_get(history_cache, path);
+  if (result) {
+    return result;
   }
 
   // Backend needs path without trailing /
@@ -75,7 +83,7 @@ async function get_history(path) {
   let response = await fetch(`${COVERAGE_BACKEND_HOST}/v2/history?path=${path}`);
   let data = await response.json();
 
-  history_cache[path] = data;
+  cache_set(history_cache, path, result);
 
   // Check data has coverage values
   // These values are missing when going above 2 levels right now
