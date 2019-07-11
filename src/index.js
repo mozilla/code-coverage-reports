@@ -118,7 +118,7 @@ async function load() {
     ]);
   } catch (err) {
     console.warn('Failed to load coverage', err);
-    await DOM_READY; // We want to always disaply this message
+    await DOM_READY; // We want to always display this message
     message('error', 'Failed to load coverage: ' + err.message);
     throw err;
   }
