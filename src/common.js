@@ -48,11 +48,6 @@ async function get_path_coverage(path, changeset) {
   return await response.json();
 }
 
-async function get_file_coverage(changeset, path) {
-  let response = await fetch(`${COVERAGE_BACKEND_HOST}/v2/path?changeset=${changeset}&path=${path}`);
-  return await response.json();
-}
-
 async function get_history(path) {
   // Backend needs path without trailing /
   if (path && path.endsWith('/')) {
