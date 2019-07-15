@@ -1,4 +1,6 @@
-const REV_LATEST = 'latest';
+import Mustache from 'mustache';
+
+export const REV_LATEST = 'latest';
 
 function assert(condition, message) {
   if (!condition) {
@@ -9,9 +11,9 @@ function assert(condition, message) {
 function domContentLoaded() {
   return new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
 }
-DOM_READY = domContentLoaded();
+export const DOM_READY = domContentLoaded();
 
-async function main(load, display, opts) {
+export async function main(load, display, opts) {
   // Immediately listen to DOM event
 
   // Load initial data before DOM is available
@@ -62,7 +64,7 @@ function cache_set(cache, key, value) {
 }
 
 let path_coverage_cache = {};
-async function get_path_coverage(path, changeset) {
+export async function get_path_coverage(path, changeset) {
   let data = cache_get(path_coverage_cache, `${changeset}_${path}`);
   if (data) {
     return data;
@@ -84,7 +86,7 @@ async function get_path_coverage(path, changeset) {
 }
 
 let history_cache = {};
-async function get_history(path) {
+export async function get_history(path) {
   // Backend needs path without trailing /
   if (path && path.endsWith('/')) {
     path = path.substring(0, path.length-1);
@@ -146,7 +148,7 @@ function monitor_options(opts, callback) {
 
 // hgmo.
 
-async function get_source(file) {
+export async function get_source(file) {
   let response = await fetch(`https://hg.mozilla.org/mozilla-central/raw-file/tip/${file}`);
   return await response.text();
 }
@@ -166,7 +168,7 @@ let get_third_party_paths = function() {
   };
 }();
 
-async function filter_third_party(files) {
+export async function filter_third_party(files) {
   if (is_enabled('third_party')) {
     return files;
   }
@@ -184,7 +186,7 @@ async function filter_third_party(files) {
   });
 }
 
-function filter_languages(files) {
+export function filter_languages(files) {
   let cpp = is_enabled('cpp');
   let cpp_extensions = ['c', 'cpp', 'cxx', 'cc', 'h', 'hh', 'hxx', 'hpp', 'inl', 'inc'];
   let js = is_enabled('js');
@@ -212,7 +214,7 @@ function filter_languages(files) {
   });
 }
 
-function filter_headers(files) {
+export function filter_headers(files) {
   if (is_enabled('headers')) {
     return files;
   }
@@ -220,7 +222,7 @@ function filter_headers(files) {
   return files.filter(file => !file.path.endsWith('.h'));
 }
 
-function filter_completely_uncovered(files) {
+export function filter_completely_uncovered(files) {
   if (!is_enabled('completely_uncovered')) {
     return files;
   }
@@ -228,7 +230,7 @@ function filter_completely_uncovered(files) {
   return files.filter(file => file.uncovered);
 }
 
-function filter_last_push_date(files) {
+export function filter_last_push_date(files) {
   let elem = document.getElementById('last_push');
   let upper_limit = new Date();
   let lower_limit = new Date();
@@ -257,7 +259,7 @@ function filter_last_push_date(files) {
 }
 
 // Build the urls for a breadcrumb Navbar from a path
-function build_navbar(path, revision) {
+export function build_navbar(path, revision) {
   if (path.endsWith('/')) {
     path = path.substring(0, path.length-1);
   }
@@ -282,7 +284,7 @@ function canDisplay() {
   return document.readyState == 'complete';
 }
 
-function message(cssClass, message) {
+export function message(cssClass, message) {
   if(!canDisplay()) return;
 
   let box = document.getElementById('message');
@@ -291,14 +293,14 @@ function message(cssClass, message) {
   box.style.display = 'block';
 }
 
-function hide(id) {
+export function hide(id) {
   if(!canDisplay()) return;
 
   let box = document.getElementById(id);
   box.style.display = 'none';
 }
 
-function show(id, node) {
+export function show(id, node) {
   if(!canDisplay()) return;
 
   let box = document.getElementById(id);
@@ -309,7 +311,7 @@ function show(id, node) {
   return box;
 }
 
-function render(template, data, target) {
+export function render(template, data, target) {
   var output = Mustache.render(document.getElementById(template).innerHTML, data);
   let box = document.getElementById(target);
   box.innerHTML = output;
