@@ -113,17 +113,20 @@ async function get_history(path) {
   return data;
 }
 
-let get_zero_coverage_data = function() {
-  let files = null;
-  return async function() {
-    if (!files) {
-      let response = await fetch('https://index.taskcluster.net/v1/task/project.releng.services.project.production.code_coverage_bot.latest/artifacts/public/zero_coverage_report.json');
-      files = await response.json();
-    }
+let zero_coverage_cache = {};
+export async function get_zero_coverage_data() {
+  let data = cache_get(zero_coverage_cache, '');
+  if (data) {
+    return data;
+  }
 
-    return files;
-  };
-}();
+  let response = await fetch('https://index.taskcluster.net/v1/task/project.releng.services.project.production.code_coverage_bot.latest/artifacts/public/zero_coverage_report.json');
+  data = await response.json();
+
+  cache_set(zero_coverage_cache, '', data);
+
+  return data;
+}
 
 
 // Option handling.
