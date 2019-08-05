@@ -1,4 +1,7 @@
 # Mozilla Code Coverage frontend
+
+Transferred to https://github.com/mozilla/code-coverage.
+
 This is a simple JavaScript application displaying information from the Mozilla code coverage backend (hosted as https://coverage.moz.tools)
 
 You can use it right now from  [mozilla.github.io/code-coverage-reports](https://mozilla.github.io/code-coverage-reports/)
